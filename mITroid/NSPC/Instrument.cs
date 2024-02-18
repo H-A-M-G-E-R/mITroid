@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace mITroid.NSPC
 {
@@ -19,6 +15,8 @@ namespace mITroid.NSPC
         public int VirtualInstrumentType { get; set; }
         public int VirtualInstrumentIndex { get; set; }
         public int SampleIndex { get; set; }
+
+        public bool use_adsr_for_fadeout { get; set; }
 
         private static readonly int[] AttackTable = { 4100, 2500, 1500, 1000, 640, 380, 260, 160, 96, 64, 40, 24, 16, 10, 6, 0 };
         private static readonly int[] DecayTable = { 1200, 740, 440, 290, 180, 110, 74, 37 };
@@ -54,6 +52,7 @@ namespace mITroid.NSPC
         {
             InstrumentIndex = itInstrument.InstrumentIndex;
             FadeOut = itInstrument.FadeOut;
+            use_adsr_for_fadeout = false;
             SampleIndex = nSample.SampleIndex;
 
             if (itInstrument.FileName.StartsWith(">"))
@@ -106,6 +105,9 @@ namespace mITroid.NSPC
                     dDuration = 0x7 - ((dDuration > 0xF ? 0xF : dDuration) >> 1);
                     sDuration = 0x1f - ((sDuration << 1) > 0x1F ? 0x1F : (sDuration << 1));
                 }
+
+                FadeOut = itInstrument.EnvelopeNodes[3].Ticks - itInstrument.EnvelopeNodes[2].Ticks;
+                use_adsr_for_fadeout = true;
 
                 int ad = 0x80 + (dDuration << 4) + aDuration;
                 int sr = (sVol << 5) + sDuration;

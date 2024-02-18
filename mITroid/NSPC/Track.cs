@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace mITroid.NSPC
 {
@@ -1526,7 +1524,10 @@ namespace mITroid.NSPC
                         }
                         else
                         {
-                            fadeOutVal = (8192 / fadeOutVal) * module.CurrentSpeed;
+                            if (nI.use_adsr_for_fadeout)
+                                fadeOutVal = nI.FadeOut * module.CurrentSpeed;
+                            else
+                                fadeOutVal = (8192 / fadeOutVal) * module.CurrentSpeed;
 
                             if (fadeOutVal > 0xFF)
                                 fadeOutVal = 0xFF;
